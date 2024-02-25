@@ -1,7 +1,7 @@
 <template>
     <div class="top-bar">
         <div class="logo">
-            <img src="@/images/logo.ico" alt="">
+            <img src="@/assets/images/logo.ico" alt="">
             <p class="logo-name">光影</p>
         </div>
         <div class="menu">
@@ -14,7 +14,7 @@
                 <div class="img" @click="changeStyle"></div>
             </div>
             <div class="user-head">
-                <img src="@/images/head.jpg" alt="">
+                <img src="@/assets/images/head.jpg" alt="">
             </div>
         </div>
     </div>

@@ -4,19 +4,17 @@
             <!--  -->
             <div class="foot-left">
                 <div class="logo">
-                <img src="@/images/logo.ico" alt="">
+                <img src="@/assets/images/logo.ico" alt="">
                 <p class="logo-name">光影</p>
             </div>
-            <div class="top-p">光影游戏社区</div>
-            <div class="top-p">欢迎佬们加入</div>
-            <!-- <div class="state"><span>作者：莽梦</span><span>QQ：3157199927</span></div> -->
+            <div class="top-p">光影留言区</div>
+            <div class="top-p">欢迎留下脚步</div>
             </div>
             <!--  -->
             <div class="link">
                 <p class="title">链接</p>
                 <div class="link-inner">
-                    <a href="https://space.bilibili.com/336130356" target="_blank" class="link-name">作者B站</a>
-                    <a href="https://github.com/15715558546" target="_blank" class="link-name">网站公告</a>
+                    <a href="https://github.com/YauCheun/guangyingWall" target="_blank" class="link-name">github</a>
                 </div> 
             </div>
             <!--  -->
@@ -24,9 +22,6 @@
                 <div class="text">
                     <p class="text1">光影的群聊</p>
                     <p class="text2">群号: 11111111</p>
-                </div>
-                <div class="qq">
-                    <!-- <div><img src="@/images/qq.jpg" alt=""></div>       -->
                 </div>
 
             </div>

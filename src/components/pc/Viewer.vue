@@ -31,7 +31,8 @@ import { computed } from 'vue';
 // import { baseUrl } from '@/utils/env.js';
 const props = defineProps({
     photos: {
-        default: []
+        type: Array,
+        default: ()=>[]
     },
     nowNumber: {
         type: Number,
