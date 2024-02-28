@@ -48,7 +48,7 @@ import {
     label //标签
 } from '@/utils/data.js'
 import { getObjectURL } from '@/utils/methods.js'
-// import { insertWallApi, proFileApi } from '@/api/index'
+import { insertWallApi } from '@/api/index.js'  //proFileApi
 import Ibutton from './Ibutton.vue';
 //@ts-ignore 获取当前组件实例
 const { appContext } = getCurrentInstance();
@@ -103,28 +103,29 @@ const submit = () => {
     if (message.value && props.id == 0) {
         
         data.color = colorSelected.value
-        // insertWallApi(data).then(res => {
-        //     let cardD = {
-        //         type: props.id,
-        //         message: message.value,
-        //         name: names,
-        //         userId: user.id,
-        //         moment: new Date(),
-        //         label: labelSelected.value,
-        //         imgurl: '',
-        //         id : res.message.insertId,
-        //         islike: [{ count: 0 }],
-        //         like: [{ count: 0 }],
-        //         comcount: [{ count: 0 }],
-        //         report: [{ count: 0 }],
-        //         revoke: [{ count: 0 }],
-        //         color: colorSelected.value
+        insertWallApi(data).then((res: { message: { id: string; }; }) => {
+            console.log(11,res)
+            let cardD = {
+                type: props.id,
+                message: message.value,
+                name: names,
+                userId: user.id,
+                moment: new Date(),
+                label: labelSelected.value,
+                imgurl: '',
+                id : res.message.id,
+                islike: [{ count: 0 }],
+                like: [{ count: 0 }],
+                comcount: [{ count: 0 }],
+                report: [{ count: 0 }],
+                revoke: [{ count: 0 }],
+                color: colorSelected.value
 
-        //     }
-        //     message.value = ''
-        //     emits('clickbt', cardD)
-        //     globalProxy.Modal({ type: 'success', message: '感谢您的记录' })
-        // })
+            }
+            message.value = ''
+            emits('clickbt', cardD)
+            globalProxy.Modal({ type: 'success', message: '感谢您的记录' })
+        })
 
     } else if (props.id == 1 && url.value) {
         updatePhoto(data)
