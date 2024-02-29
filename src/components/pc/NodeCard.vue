@@ -1,5 +1,5 @@
 <template>
-    <div class="i-node-card" :style="{ width : width , background:cardColor[card.color]}">
+    <div class="i-node-card" :style="{ width : width , background:cardColor[card?.color||0] }">
         <div class="top">
             <p class="time">{{ dateTransform(card.moment) }}</p>
             <p class="label">{{ label[card.type][card.label]}}</p>
@@ -28,7 +28,7 @@
 import { label,cardColor } from '@/utils/data.js'
 import { computed  } from 'vue';
 import { dateTransform } from '@/utils/methods.js'
-// import { insertFeedBackApi } from '@/api/index.js'
+import { insertFeedBackApi } from '@/api/index.js'
 import { useStore } from "@/store/index";;
 const store = useStore()
 const emits = defineEmits(['toDetail'])
@@ -58,11 +58,11 @@ const clickLike = ()=>{
 
         }
         console.log(data)
-        // insertFeedBackApi(data).then(res=>{
-        //     //反馈
-        //     card.value.like[0].count++
-        //     card.value.islike[0].count++
-        // })
+        insertFeedBackApi(data).then(()=>{
+            //反馈
+            card.value.like[0].count++
+            card.value.islike[0].count++
+        })
     }
 }
 </script>

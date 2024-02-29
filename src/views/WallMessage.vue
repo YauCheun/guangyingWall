@@ -64,7 +64,7 @@ import PhotoCard from '@/components/pc/PhotoCard.vue'
 import Viewer from '@/components/pc/Viewer.vue'
 import lottie from 'lottie-web'
 import loadings from '@/assets/images/loading1.json'
-// import { findWallPageApi } from '@/api/index'
+import { findWallPageApi } from '@/api/index.js'
 const route = useRoute()
 const store = useStore()
 onMounted(() => {
@@ -215,19 +215,17 @@ const ids:any = computed(() => {
   return route.query.id
 })
 //监视ID的变化
-watch(()=>ids, (newValue) => {
+watch(()=>route.query, (newValue) => {
   page.value = 1
   isModal.value = false
   view.value = false
   nowlabel.value = -1
   cardSelected.value = -1
   cards.value = []
-  getWallCard(newValue)
-
-
+  getWallCard(Number(newValue.id))
 })
 //用户IP
-var user = computed(() => {
+const user = computed(() => {
   return store.user
 })
 //切换图片
@@ -288,38 +286,37 @@ const getWallCard = (id:number) => {
       userId: user.value.id,
       label: nowlabel.value
     }
-    console.log(data)
-    // findWallPageApi(data).then(res => {
-    //   cards.value = cards.value.concat(res.message)
-    //   // 设置下一次的page
-    //   if (res.message.length) {
-    //     page.value++
-    //   } else {
-    //     page.value = 0
-    //   }
-    //   if (cards.value.length > 0) {
-    //     isOk.value = 1
-    //     if (page.value == 0) {
-    //       isOk.value = 2
-    //     }
-    //   } else {
-    //     isOk.value = 0
+    findWallPageApi(data).then((res: { message: string | any[] }) => {
+      cards.value = cards.value.concat(res.message)
+      // 设置下一次的page
+      if (res.message.length) {
+        page.value++
+      } else {
+        page.value = 0
+      }
+      if (cards.value.length > 0) {
+        isOk.value = 1
+        if (page.value == 0) {
+          isOk.value = 2
+        }
+      } else {
+        isOk.value = 0
 
-    //   }
-    //   //如果为图片则将图片单独拿出来
-    //   if (id == 1) {
-    //     for (let i = 0; i < res.message.length; i++) {
-    //       photoArr.value.push(res.message[i].imgurl)
-    //     }
+      }
+      //如果为图片则将图片单独拿出来
+      if (id == 1) {
+        for (let i = 0; i < res.message.length; i++) {
+          photoArr.value.push(res.message[i].imgurl)
+        }
 
-    //   }
-    //   isAct = false
-    // })
+      }
+      isAct = false
+    })
   }
 }
 const getUser = () => {
   let timer = setInterval(() => {
-    if (store.user) {
+    if (store.user?.id) {
       clearInterval(timer)
       getWallCard(ids.value)
     }

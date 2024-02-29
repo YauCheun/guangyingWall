@@ -1,94 +1,96 @@
 <template>
-    <div class="i-node-card" :style="{ width : width , background:cardColor[card.color]}">
+    <div class="i-node-card" :style="{ width: width, background: cardColor[card?.color || 0] }">
         <div class="top">
             <p class="time">{{ dateTransform(card.moment) }}</p>
-            <p class="label">{{ label[card.type][card.label]}}</p>
+            <p class="label">{{ label[card.type][card.label] }}</p>
         </div>
         <p class="message" @click="toDetail">
             {{ card.message }}
         </p>
-        <div class="foot"> 
+        <div class="foot">
             <div class="foot-left">
                 <div class="icon" @click="clickLike">
-                    <span class="iconfont icon-aixin1" :class="{ 'islike' : card.islike[0].count >= 1}"></span>
+                    <span class="iconfont icon-aixin1" :class="{ 'islike': card.islike[0].count >= 1 }"></span>
                     <span class="value">{{ card.like[0].count }}</span>
                 </div>
-                <div class="icon" >
+                <div class="icon">
                     <span class="iconfont icon-liuyan"></span>
                     <span class="value">{{ card.comcount[0].count }}</span>
                 </div>
-                
+
             </div>
-            <div class="name">{{ card.name}}</div>
-            
+            <div class="name">{{ card.name }}</div>
+
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { label,cardColor } from '@/utils/data.js'
-import { computed  } from 'vue';
+import { label, cardColor } from '@/utils/data.js'
+import { computed } from 'vue';
 import { dateTransform } from '@/utils/methods.js'
-// import { insertFeedBackApi } from '@/api/index'
+import { insertFeedBackApi } from '@/api/index.js'
 import { useStore } from '@/store/index';
 const store = useStore()
 const emits = defineEmits(['toDetail'])
 var props = defineProps({
-    width : {
-        default : '100%',
+    width: {
+        default: '100%',
     },
-    note : {
-        default : {}
+    note: {
+        default: {}
     }
 
 })
-var card:any = computed(()=>{
+var card: any = computed(() => {
     return props.note
 })
-const toDetail = ()=> {
+const toDetail = () => {
     emits('toDetail')
 }
 //点击喜欢
-const clickLike = ()=>{
-    if(card.value.islike[0].count == 0){
+const clickLike = () => {
+    if (card.value.islike[0].count == 0) {
         let data = {
-            wallId : card.value.id,
-            userId : store.user.id,
-            type : 0,
-            moment : new Date()
+            wallId: card.value.id,
+            userId: store.user.id,
+            type: 0,
+            moment: new Date()
 
         }
         console.log(data)
-        // insertFeedBackApi(data).then(res=>{
-        //     //反馈
-        //     card.value.like[0].count++
-        //     card.value.islike[0].count++
-        // })
+        insertFeedBackApi(data).then(()=>{
+            //反馈
+            card.value.like[0].count++
+            card.value.islike[0].count++
+        })
     }
 }
 </script>
 <style lang="less" scoped>
-
-.i-node-card{
+.i-node-card {
     height: 240px;
     padding: 10px 20px 16px;
     box-sizing: border-box;
     position: relative;
 
-    .top{
+    .top {
         display: flex;
         justify-content: space-between;
         padding-bottom: 16px;
-        p{
+
+        p {
             font-size: @size-12;
             color: @gray-3;
         }
     }
-    .message{
+
+    .message {
         height: 140px;
         font-size: @size-14;
-        color : @gray-1;
+        color: @gray-1;
     }
-    .foot{
+
+    .foot {
         display: flex;
         justify-content: space-between;
         position: absolute;
@@ -97,40 +99,47 @@ const clickLike = ()=>{
         box-sizing: border-box;
         width: 100%;
         padding: 0 @padding-20;
-        .foot-left{
+
+        .foot-left {
             display: flex;
-            .value{
+
+            .value {
                 font-size: @size-12;
-                color : @gray-3;
+                color: @gray-3;
                 line-height: 16px;
                 padding-left: @padding-4
             }
-            .iconfont{
+
+            .iconfont {
                 font-size: @size-16;
                 color: @gray-3;
             }
-            .icon{
+
+            .icon {
                 padding-right: @padding-8;
                 display: flex;
                 align-items: center;
-                .icon-aixin1{
-                  
+
+                .icon-aixin1 {
+
                     transition: @tr;
-                    &:hover{
+
+                    &:hover {
                         color: @like;
                     }
-                    
+
                 }
-                .islike{
+
+                .islike {
                     color: @like;
                 }
-                
+
             }
         }
-        .name{
+
+        .name {
             font-size: @size-16;
             color: @gray-1;
         }
     }
-}
-</style>
+}</style>

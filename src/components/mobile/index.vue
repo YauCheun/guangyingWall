@@ -15,26 +15,26 @@
 </template>
 <script setup lang="ts">
 import TopBar from './TopBar.vue';
-// import { signIpApi } from '../../assets/api'; 
+import { signIpApi } from '@/api/index.js'
 import { useStore } from '@/store/index';
 import { onMounted } from 'vue'
 const store = useStore()
 const getUser = () => {
-    // signIpApi().then(res=>{
-    //     let user = {
-    //         id : res.ip
-    //     }
-    //     store.commit('getUser',user)
-    // })
-    store.getUser({id:'test'})
+    signIpApi().then((res: { ip: string; }) => {
+        let user = {
+            id: res.ip
+        }
+        store.getUser(user)
+    })
+
 }
-onMounted(()=>{
+onMounted(() => {
     getUser()
 })
 </script>
 <style lang="less" scoped>
-.wall-index{
-    .bg-video{
+.wall-index {
+    .bg-video {
         position: fixed;
         top: 0;
         left: 0;

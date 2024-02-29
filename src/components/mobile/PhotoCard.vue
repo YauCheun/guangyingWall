@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-// import { insertFeedBackApi } from '@/api/index'
+import { insertFeedBackApi } from '@/api/index.js'
 import { useStore } from '@/store/index';
 import { baseImgPath } from '@/utils/env.js';
 const store = useStore()
@@ -42,11 +42,11 @@ const clickLike = () => {
 
         }
         console.log(data)
-        // insertFeedBackApi(data).then(res => {
-        //     //反馈
-        //     photo.value.like[0].count++
-        //     photo.value.islike[0].count++
-        // })
+        insertFeedBackApi(data).then(() => {
+            //反馈
+            photo.value.like[0].count++
+            photo.value.islike[0].count++
+        })
     }
 }
 </script>

@@ -2,7 +2,7 @@
  * @Author: YauCheun 1272125039@qq.com
  * @Date: 2024-02-25 11:01:23
  * @LastEditors: YauCheun 1272125039@qq.com
- * @LastEditTime: 2024-02-25 11:09:48
+ * @LastEditTime: 2024-02-29 23:32:33
  * @FilePath: \guangyingWall\src\components\pc\CardDetail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -43,7 +43,7 @@ import { portrait } from '@/utils/data.js'
 import { dateTransform } from '@/utils/methods.js'
 import { computed, ref, onMounted, watch, getCurrentInstance } from 'vue';
 import { useStore } from "@/store/index";
-// import { insertCommentApi,findCommentPage } from '@/api/index'
+import { insertCommentApi,findCommentPage } from '@/api/index.js'
 //@ts-ignore 获取当前组件实例
 const { appContext } = getCurrentInstance();
 const globalProxy = appContext.config.globalProperties;
@@ -95,12 +95,11 @@ const submit = () => {
             name: name.value,
 
         }
-        console.log(data)
-        // insertCommentApi(data).then(res=>{
-        //     comment.value.unshift(data)
-        //     cards.value.comcount[0].count++
-        //     discuss.value = ''
-        // })
+        insertCommentApi(data).then(()=>{
+            comment.value.unshift(data)
+            cards.value.comcount[0].count++
+            discuss.value = ''
+        })
     }
 }
 
@@ -113,12 +112,12 @@ const getComment = () => {
             pagesize: pagesize.value
         }
         console.log(data)
-        // findCommentPage(data).then(res => {
-        //     comment.value = comment.value.concat(res.message)
-        //     if(res.message.length == pagesize.value){
-        //         page.value++
-        //     }else{ page.value = 0 }
-        // })
+        findCommentPage(data).then((res: { message: string | any[]; }) => {
+            comment.value = comment.value.concat(res.message)
+            if(res.message.length == pagesize.value){
+                page.value++
+            }else{ page.value = 0 }
+        })
     }
 }
 const delete_card = () => {

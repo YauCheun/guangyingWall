@@ -9,14 +9,16 @@
         </div>
         <p class="title">{{ wallType[ids].name }}</p>
         <p class="slogan">{{ wallType[ids].slogan }}</p>
-        <div class="card"  v-show="ids == 0">
-            <NodeCard  class="card-inner" :class="{ 'cardselected' : index == cardSelected}"  @toDetail="selectCard(index)" :note="e" v-for="(e,index) in cards" :key="index"></NodeCard>
+        <div class="card" v-show="ids == 0">
+            <NodeCard class="card-inner" :class="{ 'cardselected': index == cardSelected }" @toDetail="selectCard(index)"
+                :note="e" v-for="(e, index) in cards" :key="index"></NodeCard>
         </div>
-        <div class="add" :style="{bottom :   '30px'}" @click="addCard" v-show="!isModal">
-            <span class="iconfont icon-tianjia" ></span>
+        <div class="add" :style="{ bottom: '30px' }" @click="addCard" v-show="!isModal">
+            <span class="iconfont icon-tianjia"></span>
         </div>
         <div class="photo" v-show="ids == 1">
-            <PhotoCard :photoItem="e" class="photo-card" v-for="(e,index) in cards" :key="index" @toDetail="selectCard(index)"></PhotoCard>
+            <PhotoCard :photoItem="e" class="photo-card" v-for="(e, index) in cards" :key="index"
+                @toDetail="selectCard(index)"></PhotoCard>
         </div>
         <IModal :title="title" @close="closeModal" :isModal="isModal">
             <NewCard @clickbt="newCard" :id="ids" @closeModal="closeModal" v-if="cardSelected == -1"></NewCard>
@@ -24,7 +26,7 @@
         </IModal>
         <!-- 卡片状态 -->
         <div class="none-msg" v-if="isOk == 0">
-            <img :src="none[ids].url" >
+            <img :src="none[ids].url">
             <p>{{ none[ids].msg }}</p>
 
         </div>
@@ -32,21 +34,21 @@
             <div id="lottile">
             </div>
             <p>加载中....</p>
-        
+
         </div>
         <p class="bottom-tip" v-show="isOk == 2">
             没有更多....
         </p>
-        
-        
+
+
     </div>
 </template>
 <script setup lang="ts">
 import { wallType, label, none } from '@/utils/data.js'
 import lottie from 'lottie-web'
 import loadings from '@/assets/images/loading1.json'
-// import { findWallPageApi } from '@/api';
-import { computed,ref,onMounted,watch,nextTick } from 'vue';
+import { findWallPageApi } from '@/api/index.js';
+import { computed, ref, onMounted, watch, nextTick } from 'vue';
 import { useStore } from '@/store/index';
 import { useRoute } from 'vue-router';
 import NodeCard from '../mobile/NodeCard.vue';
@@ -56,9 +58,9 @@ import NewCard from '../mobile/NewCard.vue';
 import CardDetail from '../mobile/CardDetail.vue';
 const route = useRoute()
 const store = useStore()
-onMounted(()=>{
+onMounted(() => {
     //监听滚动
-    window.addEventListener('scroll',scrollBottom)
+    window.addEventListener('scroll', scrollBottom)
     getUser()
     loading()
 })
@@ -69,8 +71,9 @@ const isModal = ref(false)
 //当前选择卡片
 const cardSelected = ref(-1)
 //用户IP
-var user = computed(()=>{
-    return store.user})
+var user = computed(() => {
+    return store.user
+})
 //图片数组
 const photoArr = ref([] as string[])
 //弹出层标题
@@ -83,13 +86,13 @@ var isAct = false
 //页码
 const page = ref(1)
 //卡片数据
-const cards:any = ref([])
+const cards: any = ref([])
 //选择标签
 const nowlabel = ref(-1)
-var ids:any = computed(() => {
+var ids: any = computed(() => {
     return route.query.id
 })
-const selectNode = (e:number) => {
+const selectNode = (e: number) => {
     // 切换标签
     nowlabel.value = e
     cards.value = []
@@ -97,52 +100,52 @@ const selectNode = (e:number) => {
     getWallCard(ids.value)
 }
 const getUser = () => {
-    let timer = setInterval(()=>{
-        if(store.user){
+    let timer = setInterval(() => {
+        if (store.user) {
             clearInterval(timer)
             getWallCard(ids.value)
         }
-    },10)
+    }, 10)
 }
-const getWallCard = (id:number) => {
+const getWallCard = (id: number) => {
     //只有page>0才执行
     isAct = true
-    if (page.value > 0){
+    if (page.value > 0) {
         isOk.value = -1
         let data = {
-            type : id,
-            page : page.value,
+            type: id,
+            page: page.value,
             pagesize: pagesize.value,
-            userId : user.value.id,
-            label : nowlabel.value
+            userId: user.value.id,
+            label: nowlabel.value
         }
-        console.log(data)
-        // findWallPageApi(data).then(res => {
-        //     cards.value = cards.value.concat(res.message)
-        //     // 设置下一次的page
-        //     if(res.message.length){
-        //         page.value++
-        //     }else{
-        //         page.value = 0
-        //     }
-        //     if( cards.value.length > 0){
-        //             isOk.value = 1
-        //             if(page.value ==0){
-        //                 isOk.value = 2 
-        //             }
-        //         }else{
-        //             isOk.value = 0
 
-        //         }
-        //     //如果为图片则将图片单独拿出来
-        //     if(id == 1){
-        //         for(let i=0;i<res.message.length;i++){
-        //             photoArr.value.push(res.message[i].imgurl)
-        //         }
-                
-        //     }
-        //     isAct = false
-        // })
+        findWallPageApi(data).then((res: { message: string | any[]; }) => {
+            cards.value = cards.value.concat(res.message)
+            // 设置下一次的page
+            if (res.message.length) {
+                page.value++
+            } else {
+                page.value = 0
+            }
+            if (cards.value.length > 0) {
+                isOk.value = 1
+                if (page.value == 0) {
+                    isOk.value = 2
+                }
+            } else {
+                isOk.value = 0
+
+            }
+            //如果为图片则将图片单独拿出来
+            if (id == 1) {
+                for (let i = 0; i < res.message.length; i++) {
+                    photoArr.value.push(res.message[i].imgurl)
+                }
+
+            }
+            isAct = false
+        })
     }
 }
 const scrollBottom = async () => {
@@ -152,27 +155,27 @@ const scrollBottom = async () => {
     let clientHeight = document.documentElement.clientHeight
     //内容高度
     let scrollHeight = document.documentElement.scrollHeight
-    
-    if (Math.ceil(scrollTop) + clientHeight >= (scrollHeight - 200) && !isAct){
+
+    if (Math.ceil(scrollTop) + clientHeight >= (scrollHeight - 200) && !isAct) {
         // debounce((getWallCard(ids.value)),1000)
         getWallCard(ids.value)
-        
+
     }
 }
 const photo_view = ref(0)
-const selectCard = (e:number) => {
+const selectCard = (e: number) => {
     title.value = ''
-    if (e != cardSelected.value){
+    if (e != cardSelected.value) {
         cardSelected.value = e
         isModal.value = true
-        if(ids.value == 1){
-            photo_view.value = 1 
+        if (ids.value == 1) {
+            photo_view.value = 1
         }
         return
     }
     cardSelected.value = -1
     isModal.value = false
-    if(ids.value == 1){
+    if (ids.value == 1) {
         view.value = false
     }
 }
@@ -181,30 +184,30 @@ const closeModal = () => {
     cardSelected.value = -1
     photo_view.value = 0
     isModal.value = false
-    if(ids.value == 1){
-            view.value = false
-        }
+    if (ids.value == 1) {
+        view.value = false
+    }
 }
 //监视ID的变化
-watch(()=>ids,(newValue)=>{
+watch(() => route.query, (newValue) => {
     page.value = 1
     isModal.value = false
     view.value = false
     nowlabel.value = -1
     cardSelected.value = -1
     cards.value = []
-    getWallCard(newValue)
-    
-   
+    getWallCard(Number(newValue.id))
+
+
 })
 
-const newCard = (data:any) =>{
+const newCard = (data: any) => {
     cards.value.unshift(data)
-    if(data.type == 1){
+    if (data.type == 1) {
         photoArr.value.unshift(data.imgurl)
     }
-    
-    isOk.value =1
+
+    isOk.value = 1
     closeModal()
 }
 //增加卡片
@@ -214,14 +217,14 @@ const addCard = () => {
 }
 //加载动画
 var loading = () => {
-    if(isOk.value = -1){
-        nextTick(async () =>{
-            var params1:any = {
-                container : document.getElementById('lottile'),
-                renderer : 'svg',
-                loop : true,
-                autoplay : true,
-                animationData : loadings,
+    if (isOk.value = -1) {
+        nextTick(async () => {
+            var params1: any = {
+                container: document.getElementById('lottile'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                animationData: loadings,
             }
             lottie.loadAnimation(params1)
         })
@@ -234,6 +237,7 @@ var loading = () => {
     padding-top: 84px;
     padding-left: 20px;
     padding-right: 20px;
+
     .label {
         z-index: 9999;
         background: #f5f6f7;
@@ -247,6 +251,7 @@ var loading = () => {
         overflow-x: auto;
         padding: 0 8px;
         box-sizing: border-box;
+
         .label-list {
             flex: none;
             margin: 0 12px;
@@ -278,57 +283,67 @@ var loading = () => {
             background: rgba(0, 0, 0, 0);
         }
     }
-    .title{
+
+    .title {
         padding-top: 40px;
         font-size: 32px;
-        color: #202020; 
+        color: #202020;
         font-weight: 600;
     }
-    .slogan{
+
+    .slogan {
         padding-top: 8px;
         font-size: 14px;
         font-weight: 400;
         color: #7e7e7e;
     }
-    .card{
+
+    .card {
         display: flex;
         flex-wrap: wrap;
         padding-top: 28px;
         justify-content: center;
         width: 100%;
-        .card-inner{
+
+        .card-inner {
             margin-bottom: 10px;
             border: 1px solid transparent;
             transition: @tr;
-            &:hover{
+
+            &:hover {
                 scale: 1.05;
             }
         }
-        .cardselected{
+
+        .cardselected {
             border: 1px solid @primary-color;
         }
     }
-    .photo{
+
+    .photo {
         width: 100%;
         margin: 0 auto;
         columns: 3;
         column-gap: @padding-4;
         padding-top: 20px;
-        .photo-card{
+
+        .photo-card {
             margin-bottom: @padding-4;
             break-inside: avoid;
             transition: @tr;
-            &:hover{
+
+            &:hover {
                 scale: 1.03;
             }
-            
+
         }
     }
-    .add{
+
+    .add {
         width: 56px;
         height: 56px;
         background: @gray-1;
-        box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.08);
+        box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
         border-radius: 28px;
         position: fixed;
         right: 30px;
@@ -337,12 +352,14 @@ var loading = () => {
         align-items: center;
         transition: @tr;
         z-index: 10000;
-        .icon-tianjia{
+
+        .icon-tianjia {
             color: @gray-10;
             font-size: 24px;
         }
     }
-    .none-msg{
+
+    .none-msg {
         left: 0;
         right: 0;
         margin: 0 auto;
@@ -350,35 +367,39 @@ var loading = () => {
         padding-top: 80px;
         position: absolute;
         top: 280px;
-        
-        img{
+
+        img {
             display: inline;
         }
-        p{
+
+        p {
             font-weight: 700;
             font-size: 24px;
             color: @gray-3;
         }
     }
-    .loading{
+
+    .loading {
         text-align: center;
         width: 100%;
-        p{
+
+        p {
             margin-top: 72px;
             font-size: 24px;
             color: @gray-3;
         }
     }
-    #lottile{
+
+    #lottile {
         margin-top: 20px;
         height: 150px;
         background-color: transparent;
     }
-    .bottom-tip{
+
+    .bottom-tip {
         text-align: center;
         color: @gray-3;
         padding: 20px;
-        
+
     }
-}
-</style>
+}</style>

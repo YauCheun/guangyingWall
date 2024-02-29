@@ -39,9 +39,9 @@ import NodeCard from './NodeCard.vue';
 import Ibutton from './Ibutton.vue';
 import { portrait } from '@/utils/data.js'
 import { dateTransform } from '@/utils/methods.js'
-import { computed,ref,onMounted,watch } from 'vue';
+import { computed,ref,onMounted,watch,getCurrentInstance } from 'vue';
 import { useStore } from "@/store/index";;
-// import { insertCommentApi,findCommentPage } from '@/api/index'
+import { insertCommentApi,findCommentPage } from '@/api/index.js'
 import { baseImgPath } from '@/utils/env.js';
 const store = useStore()
 //@ts-ignore 获取当前组件实例
@@ -100,11 +100,11 @@ const submit = () =>{
             
         }
         console.log(data)
-        // insertCommentApi(data).then(res=>{
-        //     comment.value.unshift(data)
-        //     cards.value.comcount[0].count++
-        //     discuss.value = ''
-        // })
+        insertCommentApi(data).then(()=>{
+            comment.value.unshift(data)
+            cards.value.comcount[0].count++
+            discuss.value = ''
+        })
     }
 }
 
@@ -116,13 +116,12 @@ const getComment = () => {
             page : page.value,
             pagesize : pagesize.value
         }
-        console.log(data)
-        // findCommentPage(data).then(res => {
-        //     comment.value = comment.value.concat(res.message)
-        //     if(res.message.length == pagesize.value){
-        //         page.value++
-        //     }else{ page.value = 0 }
-        // })
+        findCommentPage(data).then((res: { message: string | any[]; }) => {
+            comment.value = comment.value.concat(res.message)
+            if(res.message.length == pagesize.value){
+                page.value++
+            }else{ page.value = 0 }
+        })
     }
 }
 const delete_card = () =>{
