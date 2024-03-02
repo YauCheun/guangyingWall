@@ -1,5 +1,6 @@
-<template><!-- 新建卡片 -->
-    
+<template>
+    <!-- 新建卡片 -->
+
     <div class="new-card">
 
         <!-- 照片 -->
@@ -12,7 +13,7 @@
             <div class="change-bt" v-if="url != ''">
                 <span class="iconfont icon-xiugai"></span>
             </div>
-            <div class="photo-div" v-show="url!=''"><img :src="url"></div>
+            <div class="photo-div" v-show="url != ''"><img :src="url"></div>
         </div>
 
         <!-- 卡片 -->
@@ -48,7 +49,7 @@ import {
     label //标签
 } from '@/utils/data.js'
 import { getObjectURL } from '@/utils/methods.js'
-import { insertWallApi } from '@/api/index.js'  //proFileApi
+import { insertWallApi, proFileApi } from '@/api/index.js'  //proFileApi
 import Ibutton from './Ibutton.vue';
 //@ts-ignore 获取当前组件实例
 const { appContext } = getCurrentInstance();
@@ -68,16 +69,16 @@ const labelSelected = ref(0)
 //当前IP
 const user = store.user
 // 切换颜色
-const changeColor = (e:number) => {
+const changeColor = (e: number) => {
     colorSelected.value = e
 }
 // 切换标签
-const changeLabel = (e:number) => {
+const changeLabel = (e: number) => {
     labelSelected.value = e
 }
 //关闭窗口
 const emits = defineEmits(['closeModal', 'clickbt'])
-const closeModal = (data:any) => {
+const closeModal = (data: any) => {
     emits('closeModal', data)
 }
 const props = defineProps({
@@ -91,20 +92,20 @@ const submit = () => {
         names = name.value
     }
     let data = {
-            type: props.id,
-            message: message.value,
-            name: names,
-            userId: user.id,
-            moment: new Date(),
-            label: labelSelected.value,
-            color: 5,
-            imgurl: ''
-        }
+        type: props.id,
+        message: message.value,
+        name: names,
+        userId: user.id,
+        moment: new Date(),
+        label: labelSelected.value,
+        color: 5,
+        imgurl: ''
+    }
     if (message.value && props.id == 0) {
-        
+
         data.color = colorSelected.value
         insertWallApi(data).then((res: { message: { id: string; }; }) => {
-            console.log(11,res)
+            console.log(11, res)
             let cardD = {
                 type: props.id,
                 message: message.value,
@@ -113,7 +114,7 @@ const submit = () => {
                 moment: new Date(),
                 label: labelSelected.value,
                 imgurl: '',
-                id : res.message.id,
+                id: res.message.id,
                 islike: [{ count: 0 }],
                 like: [{ count: 0 }],
                 comcount: [{ count: 0 }],
@@ -139,36 +140,35 @@ const showPhoto = () => {
 }
 //图片提交
 const updatePhoto = (data: { type?: number; message?: string; name: any; userId?: string; moment?: Date; label?: number; color?: number; imgurl: any; }) => {
-    let file:any = document.getElementById('file')
+    let file: any = document.getElementById('file')
     console.log(data)
     if (file.files.length > 0) {
         let formData = new FormData()
         formData.append('file', file.files[0])
-        // proFileApi(formData).then(res => {
-        //     data.imgurl = res
-        //     insertWallApi(data).then(result => {
-        //         let cardD = {
-        //             type: props.id,
-        //             message: message.value,
-        //             name: data.name,
-        //             userId: user.id,
-        //             moment: new Date(),
-        //             label: labelSelected.value,
-        //             color: 5,
-        //             imgurl: res,
-        //             id : result.message.insertId,
-        //             islike: [{ count: 0 }],
-        //             like: [{ count: 0 }],
-        //             comcount: [{ count: 0 }],
-        //             report: [{ count: 0 }],
-        //             revoke: [{ count: 0 }],
-        //             color: colorSelected.value
-        //         }
-        //         message.value = ''
-        //         emits('clickbt', cardD)
-        //         globalProxy.Modal({ type: 'success', message: '感谢您的记录' })
-        //     })
-        // })
+        proFileApi(formData).then((res: string) => {
+            data.imgurl = res
+            insertWallApi(data).then((result: { message: { insertId: string; }; }) => {
+                let cardD = {
+                    type: props.id,
+                    message: message.value,
+                    name: data.name,
+                    userId: user.id,
+                    moment: new Date(),
+                    label: labelSelected.value,
+                    imgurl: res,
+                    id : result.message.insertId,
+                    islike: [{ count: 0 }],
+                    like: [{ count: 0 }],
+                    comcount: [{ count: 0 }],
+                    report: [{ count: 0 }],
+                    revoke: [{ count: 0 }],
+                    color: colorSelected.value || 5
+                }
+                message.value = ''
+                emits('clickbt', cardD)
+                globalProxy.Modal({ type: 'success', message: '感谢您的记录' })
+            })
+        })
     }
 }
 </script>
@@ -176,6 +176,7 @@ const updatePhoto = (data: { type?: number; message?: string; name: any; userId?
 .new-card {
     padding: 0 20px;
     position: relative;
+
     // height: 100px;
     // background: red;
     .colors {
@@ -274,6 +275,7 @@ const updatePhoto = (data: { type?: number; message?: string; name: any; userId?
         // backdrop-filter: blur(10px);
         height: 40px;
         border-radius: 24px;
+
         .sbumit {
             margin-left: 480px;
 
@@ -343,5 +345,4 @@ const updatePhoto = (data: { type?: number; message?: string; name: any; userId?
 
 
 
-}
-</style>
+}</style>

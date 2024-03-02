@@ -9,7 +9,7 @@
                 </div>
                 <!-- 图片 -->
                 <div class="viewer-photo" @click="showPhotoDetail">
-                    <img :src="'http://localhost:3000/'  + photo[number] " alt=''>
+                    <img :src="'http://localhost:3000'  + photo[number] " alt=''>
                 </div>
 
                 <!-- 右 -->

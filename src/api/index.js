@@ -2,7 +2,7 @@
  * @Author: YauCheun 1272125039@qq.com
  * @Date: 2024-02-28 22:46:35
  * @LastEditors: YauCheun 1272125039@qq.com
- * @LastEditTime: 2024-02-29 22:10:00
+ * @LastEditTime: 2024-03-02 16:53:15
  * @FilePath: \guangyingWall\src\api\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -33,5 +33,5 @@ export function findCommentPage(data){
 }
 //上传图片
 export function proFileApi(data){
-    return fetch.post('/profile',data)
+    return fetch.post('/upload/profile',data)
 }
